@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation.xml"
+    app:startDestination="@id/studentListFragment">
+
+    <fragment
+        android:id="@+id/studentListFragment"
+        android:name="com.lava.asfin.presentation.studentList.StudentListFragment"
+        android:label="StudentListFragment"
+        tools:layout = "@layout/fragment_student_list">
+        <action
+            android:id="@+id/action_studentListFragment_to_studentDetailFragment"
+            app:destination="@id/studentDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/studentDetailFragment"
+        android:name="com.lava.asfin.presentation.studentdetail.StudentDetailFragment"
+        android:label="StudentDetailFragment"
+        tools:layout = "@layout/fragment_student_detail">
+        <argument
+            android:name="serialnumber"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_studentDetailFragment_to_studentListFragment"
+            app:destination="@id/studentListFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@id/studentListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

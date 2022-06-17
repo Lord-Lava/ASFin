@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="student"
+            type="com.lava.asfin.data.local.Student" />
+
+        <variable
+            name="clickListener"
+            type="com.lava.asfin.presentation.adapters.StudentListener" />
+
+        <variable
+            name="scoreListener"
+            type="com.lava.asfin.presentation.adapters.ScoreListener" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/llStudent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:onClick="@{() -> clickListener.onClick(student)}"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/etScore"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSerialNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_16dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text"
+                app:serialnumber="@{student}"
+                tools:text="100" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStudentName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/margin_16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text"
+                app:name="@{student}"
+                tools:text="Snehil" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etScore"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_16dp"
+            android:hint="@string/enter_score"
+            android:inputType="number"
+            android:textSize="@dimen/text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAssign"
+            app:layout_constraintStart_toEndOf="@id/llStudent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAssign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_16dp"
+            android:background="@android:color/darker_gray"
+            android:onClick="@{() -> scoreListener.onClick(etScore, student)}"
+            android:text="@string/assign"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
