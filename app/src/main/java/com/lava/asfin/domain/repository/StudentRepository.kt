@@ -18,4 +18,6 @@ interface StudentRepository {
     suspend fun getStudent(key: Int): Student?
 
     fun getAllStudents(): LiveData<List<Student>>
+
+    suspend fun clear()
 }

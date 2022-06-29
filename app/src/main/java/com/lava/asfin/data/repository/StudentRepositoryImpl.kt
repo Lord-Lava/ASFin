@@ -28,4 +28,6 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun getStudent(key: Int): Student? = database.studentDao().getStudent(key)
 
     override fun getAllStudents(): LiveData<List<Student>> = database.studentDao().getAllStudents()
+
+    override suspend fun clear() = database.studentDao().clear()
 }

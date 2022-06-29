@@ -19,6 +19,9 @@ class StudentListViewModel @Inject constructor(
     private val repository: StudentRepository,
 ) : ViewModel() {
 
+    private var _pageNumber = "0"
+    val pageNumber = _pageNumber
+
     private val _studentsResponse = MutableLiveData<Resource<StudentDetailDto>>()
     val studentResponse = _studentsResponse as LiveData<Resource<StudentDetailDto>>
 
@@ -29,15 +32,15 @@ class StudentListViewModel @Inject constructor(
     val isValidScore = _isValidScore as LiveData<Boolean?>
 
     init {
-        if (getStudentsList().value.isNullOrEmpty()) getStudentsResponse(0)
+        if (getStudentsList().value.isNullOrEmpty()) getStudentsResponse(_pageNumber)
     }
 
     fun getStudentsList() = repository.getAllStudents()
 
-    fun getStudentsResponse(pageNumber: Int) {
+    fun getStudentsResponse(pageNumber: String) {
         viewModelScope.launch {
             _studentsResponse.value = Resource.Loading
-            _studentsResponse.value = repository.getStudentsDetails(pageNumber.toString())
+            _studentsResponse.value = repository.getStudentsDetails(pageNumber)
         }
     }
 
@@ -51,6 +54,10 @@ class StudentListViewModel @Inject constructor(
         viewModelScope.launch {
             repository.insertMultipleStudents(students)
         }
+    }
+
+    fun deleteAllStudents() = viewModelScope.launch {
+        repository.clear()
     }
 
     fun onStudentClicked(serialnumber: Int) {
@@ -69,6 +76,10 @@ class StudentListViewModel @Inject constructor(
             _isValidScore.value = false
         }
         _isValidScore.value = null
+    }
+
+    fun setPageNumber(pageNumber: String) {
+        _pageNumber = pageNumber
     }
 
     fun onStudentDetailNavigated() {

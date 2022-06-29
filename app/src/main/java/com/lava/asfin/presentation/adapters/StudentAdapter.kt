@@ -1,23 +1,17 @@
 package com.lava.asfin.presentation.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lava.asfin.data.local.Student
 import com.lava.asfin.databinding.ItemStudentBinding
-import com.lava.asfin.generated.callback.OnClickListener
-import com.lava.asfin.presentation.studentList.StudentListViewModel
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class StudentAdapter(
     private val clickListener: StudentListener,

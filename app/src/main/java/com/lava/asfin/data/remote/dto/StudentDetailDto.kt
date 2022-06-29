@@ -17,6 +17,7 @@ data class StudentDetailDto(
 
 fun StudentDetailDto.toStudentDetail(): StudentDetail {
     return StudentDetail(
-        data = data.names
+        data = data.names,
+        nextPage = nextPage
     )
 }

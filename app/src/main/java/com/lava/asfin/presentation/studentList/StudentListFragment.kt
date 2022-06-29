@@ -1,25 +1,25 @@
 package com.lava.asfin.presentation.studentList
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lava.asfin.R
-import com.lava.asfin.data.local.Student
 import com.lava.asfin.data.remote.dto.toStudentDetail
 import com.lava.asfin.databinding.FragmentStudentListBinding
 import com.lava.asfin.presentation.adapters.ScoreListener
 import com.lava.asfin.presentation.adapters.StudentAdapter
 import com.lava.asfin.presentation.adapters.StudentListener
+import com.lava.asfin.util.Config.QUERY_LAST_PAGE
 import com.lava.asfin.util.Config.QUERY_PAGE_SIZE
 import com.lava.asfin.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +32,7 @@ class StudentListFragment : Fragment () {
     private var isLoading = false
     private var isLastPage = false
     private var isScrolling = false
-    private var pageNumber = 0
+    private var pageNumber = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,13 +46,17 @@ class StudentListFragment : Fragment () {
 
         binding.viewModel = viewModel
 
+        setHasOptionsMenu(true)
+
         viewModel.studentResponse.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    pageNumber = response.value.nextPage.toInt()
-                    viewModel.insertStudents(response.value.toStudentDetail())
+                    val studentDetails = response.value.toStudentDetail()
+                    Log.d("snehil", pageNumber)
+                    pageNumber = studentDetails.nextPage
+                    viewModel.insertStudents(studentDetails)
                     hideProgressBar(binding.paginationProgressBar)
-                    isLastPage = response.value.nextPage.toInt() == 50
+                    isLastPage = studentDetails.nextPage.toInt() == QUERY_LAST_PAGE
                 }
                 is Resource.Loading -> {
                     showProgressBar(binding.paginationProgressBar)
@@ -60,7 +64,7 @@ class StudentListFragment : Fragment () {
                 is Resource.Failure -> {
                     hideProgressBar(binding.paginationProgressBar)
                     if (response.isNetworkError) {
-                        Toast.makeText(context, "Check your internet connection!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.no_internet_text), Toast.LENGTH_SHORT).show()
                         return@observe
                     }
                     Toast.makeText(context, "Error: ${response.errorCode} - Couldn't fetch student details!", Toast.LENGTH_SHORT).show()
@@ -96,11 +100,27 @@ class StudentListFragment : Fragment () {
         }
 
         viewModel.isValidScore.observe(viewLifecycleOwner) {
-            if (it == true) Toast.makeText(context, "Score Updated Successfully!", Toast.LENGTH_SHORT).show()
-            else if (it == false) Toast.makeText(context, "Please enter a score first!", Toast.LENGTH_SHORT).show()
+            if (it == true) Toast.makeText(context, getString(R.string.success_score_update_text), Toast.LENGTH_SHORT).show()
+            else if (it == false) Toast.makeText(context, getString(R.string.empty_score_warning_text), Toast.LENGTH_SHORT).show()
         }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
+        inflater.inflate(R.menu.overflow_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.clear -> {
+                viewModel.deleteAllStudents()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {

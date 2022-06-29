@@ -21,4 +21,7 @@ interface StudentDao {
     @Query("SELECT * FROM students_table ORDER BY serialnumber ASC")
     fun getAllStudents(): LiveData<List<Student>>
 
+    @Query("DELETE FROM students_table")
+    suspend fun clear()
+
 }
